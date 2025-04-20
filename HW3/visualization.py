@@ -197,7 +197,8 @@ def create_improved_map_v2(df):
          ).add_to(m)
 
     # --- Add Markers to Filterable Layers ---
-    markers = [] # For search plugin
+    # --- Add Markers to Filterable Layers ---
+    markers_for_search = [] # Use a slightly different structure for Search if needed, or just use the direct markers
     for _, row in latest_df.iterrows():
         affiliation = row['Affiliation']
         asset_type = row['AssetType']
@@ -207,7 +208,7 @@ def create_improved_map_v2(df):
         icon_name = type_icons.get(asset_type, 'question-circle')
         status_indicator_color = status_colors.get(status, 'white')
 
-        # Richer Tooltip & Popup (same as before)
+        # Richer Tooltip & Popup (code remains the same)
         tooltip_html = f"""
         <b>ID:</b> {row['AssetID']} | <b>Type:</b> {asset_type}<br>
         <b>Affil:</b> {affiliation} | <b>Status:</b> <span style='color:{status_indicator_color}; font-weight:bold;'>{status}</span><br>
@@ -229,6 +230,7 @@ def create_improved_map_v2(df):
         if status == 'Alert': marker_color = 'purple'
         elif status == 'Idle': marker_color = 'orange'
 
+        # Create the main marker
         marker = folium.Marker(
             location=[row['Latitude'], row['Longitude']],
             popup=popup,
@@ -236,26 +238,33 @@ def create_improved_map_v2(df):
             icon=folium.Icon(color=marker_color, icon=icon_name, prefix='fa')
         )
 
-        # Add to relevant filter groups
-        marker.add_to(affiliation_groups[affiliation])
-        marker_clone_for_type = folium.Marker(
-            location=[row['Latitude'], row['Longitude']],
-            popup=popup,
-            tooltip=tooltip_html,
-            icon=folium.Icon(color=marker_color, icon=icon_name, prefix='fa')
-        )
-        marker_clone_for_type.add_to(type_groups[asset_type])
+        # --- START OF CHANGE ---
+        # 1. Add the marker to the main group for Search and basic visibility
+        marker.add_to(latest_positions_group)
 
-        # Add marker data to list for search plugin
-        markers.append({
+        # 2. Add the marker to the affiliation subgroup for filtering
+        #    (It's okay to add the *same* marker object to multiple groups in Folium)
+        marker.add_to(affiliation_groups[affiliation])
+
+        # 3. Add the marker to the type subgroup for filtering
+        marker.add_to(type_groups[asset_type])
+        # --- END OF CHANGE ---
+
+
+        # Add simple data for the search plugin (using the main marker's tooltip is often enough)
+        # The Search plugin uses the layer's children, so this list might not be strictly needed anymore
+        # if the tooltip is sufficient, but let's keep it for potential future use.
+        markers_for_search.append({
             "location": [row['Latitude'], row['Longitude']],
             "tooltip": f"{row['AssetID']} ({asset_type}, {affiliation}, {status})"
         })
 
-    # Add Search plugin (same as before)
+    # Add Search plugin based on latest positions
+    # Now it should correctly find the markers within latest_positions_group
     search = Search(
-        layer=latest_positions_group,
-        search_label="tooltip",
+        layer=latest_positions_group, # Search within the main latest positions group
+        search_label="tooltip",       # Search the text within the marker's tooltip attribute
+        search_zoom=14,               # Zoom level when a search result is clicked
         placeholder="Search Assets (ID, Type, Affil, Status)...",
         collapsed=True,
         position='topright',
