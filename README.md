@@ -11,10 +11,10 @@ pip install -r requirements.txt
 Execute the Python script to generate the visualization HTML
 
 ```bash
-python3 HW3/visualization.py
+python3 src/visualization.py
 ```
 
-Note: A pre-compiled HTML is included in `HW3/result` folder.
+Note: A pre-compiled HTML is included in `static` folder.
 
 ## Acknowledgement
 
