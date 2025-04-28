@@ -20,7 +20,9 @@ Note: A pre-compiled HTML is included in `static` folder.
 
 This project contributes to [SDG 11.5](https://sdgs.un.org/goals/goal11#targets_and_indicators)
 
-<img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2019/08/E-Inverted-Icons_WEB-11-1024x1024.png" alt="SDG Logo" width="500"/>
+<p align="center">
+<img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2019/08/E-Inverted-Icons_WEB-11-1024x1024.png" alt="SDG Logo" width="100"/>
+</p>
 
 ## Acknowledgement
 
