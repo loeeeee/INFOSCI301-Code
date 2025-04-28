@@ -22,3 +22,5 @@ This project has benefitted from the conversations at the Digital Technology for
 Symposium at Duke Kunshan University on April 18. We especially thank Prof. Ming-Chun Huang 
 for their insights that helped improve the work, and the conference
 organizers Profs. Luyao Zhang for making the symposium happen.
+
+Special thanks to Prof. Ming-Chun Huang, Prof. Luyao Zhang.
